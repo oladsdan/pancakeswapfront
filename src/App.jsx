@@ -12,30 +12,54 @@ function App() {
 
   const API_URL = 'https://pancakeswapsignal.onrender.com/api/signals'; // Your backend API
 
+  // const fetchSignals = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+  //     const response = await fetch(API_URL);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     setSignals(data);
+  //   } catch (err) {
+  //     console.error("Failed to fetch signals:", err);
+  //     setError("Failed to load signals. Please ensure the backend is running and accessible.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchSignals = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setSignals(data);
-    } catch (err) {
-      console.error("Failed to fetch signals:", err);
-      setError("Failed to load signals. Please ensure the backend is running and accessible.");
-    } finally {
-      setLoading(false);
+  try {
+    setLoading(true);
+    setError(null);
+    const response = await fetch(API_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("API response is not an array");
+    }
+
+    setSignals(data);
+  } catch (err) {
+    console.error("Failed to fetch signals:", err);
+    setError("Failed to load signals. Please ensure the backend is running and accessible.");
+    setSignals([]); // ensure `signals` remains an array
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchSignals(); // Fetch immediately on mount
 
     // Changed interval to match backend's likely refresh rate (e.g., 30 seconds for 100 tokens + delay)
     // Adjust this to match your backend's config.refreshIntervalMs
-    const intervalId = setInterval(fetchSignals, 5000); // Fetch every 30 seconds
+    const intervalId = setInterval(fetchSignals, 10000); // Fetch every 10 seconds
 
     return () => clearInterval(intervalId); // Cleanup on unmount
   }, []);
@@ -97,8 +121,8 @@ function App() {
                   <th>Current Volume (24h)</th>
                   <th>Current Liquidity (USD)</th>
                   <th>RSI</th>
-                  <th>MACD</th>
-                  <th>Last Buy Price</th>
+                  {/* <th>MACD</th>
+                  <th>Last Buy Price</th> */}
                   <th>Details</th>
                 </tr>
               </thead>
@@ -114,12 +138,12 @@ function App() {
                     <td>{signal.currentVolume !== 'N/A' ? `$${parseFloat(signal.currentVolume).toFixed(2)}` : 'N/A'}</td>
                     <td>{signal.currentLiquidity !== 'N/A' ? `$${parseFloat(signal.currentLiquidity).toFixed(2)}` : 'N/A'}</td>
                     <td>{signal.rsi !== 'N/A' ? parseFloat(signal.rsi).toFixed(2) : 'N/A'}</td>
-                    <td><td>
-  {signal.macd && typeof signal.macd.MACD === 'number' ? parseFloat(signal.macd.MACD).toFixed(2) : 'N/A'}
-</td></td>
-                    <td>
+                    {/* <td><td> */}
+  {/* {signal.macd && typeof signal.macd.MACD === 'number' ? parseFloat(signal.macd.MACD).toFixed(2) : 'N/A'} */}
+{/* </td></td> */}
+                    {/* <td>
                       {signal.lastBuySignal ? `$${signal.lastBuySignal.price} (${new Date(signal.lastBuySignal.timestamp).toLocaleTimeString()})` : 'N/A'}
-                    </td>
+                    </td> */}
                     <td>
                       <button onClick={() => handleShowDetails(signal)}>View Details</button>
                     </td>
