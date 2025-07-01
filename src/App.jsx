@@ -75,7 +75,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Trading Signal Dashboard</h1>
+        <h1>PancakeSwap -Signal Dashboard</h1>
       </header>
 
       <main>
