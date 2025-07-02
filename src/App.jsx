@@ -47,7 +47,7 @@ function App() {
     setSignals(data);
   } catch (err) {
     console.error("Failed to fetch signals:", err);
-    setError("Failed to load signals. Please ensure the backend is running and accessible.");
+    setError("signal is loading. please wait while it fetches.");
     setSignals([]); // ensure `signals` remains an array
   } finally {
     setLoading(false);
